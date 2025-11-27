@@ -9,7 +9,6 @@ import {
   CheckCircle,
   ArrowRight,
   Loader,
-  Database,
   Download
 } from 'lucide-react';
 import { 
@@ -25,17 +24,14 @@ import {
   Cell,
   Legend
 } from 'recharts';
-import { dashboardAPI, utilityAPI } from '../api';
+import { dashboardAPI } from '../api';
 import Button from '../components/Button';
 import AnimatedCounter from '../components/AnimatedCounter';
-import { useToast } from '../context/ToastContext';
 
 const Dashboard = () => {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [seeding, setSeeding] = useState(false);
   const [error, setError] = useState(null);
-  const toast = useToast();
 
   useEffect(() => {
     fetchStats();
@@ -51,20 +47,6 @@ const Dashboard = () => {
       console.error(err);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleSeedData = async () => {
-    try {
-      setSeeding(true);
-      await utilityAPI.seedData();
-      await fetchStats();
-      toast.success('Sample data loaded successfully!');
-    } catch (err) {
-      toast.error('Failed to load sample data');
-      console.error(err);
-    } finally {
-      setSeeding(false);
     }
   };
 
@@ -133,8 +115,6 @@ const Dashboard = () => {
     );
   }
 
-  const hasData = stats?.employees?.total > 0 || stats?.tasks?.total > 0;
-
   return (
     <div className="space-y-6 animate-fadeIn">
       {/* Header */}
@@ -143,12 +123,6 @@ const Dashboard = () => {
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
           <p className="text-gray-500 dark:text-gray-400">Overview of your employees and tasks</p>
         </div>
-        {!hasData && (
-          <Button onClick={handleSeedData} loading={seeding}>
-            <Database className="w-4 h-4 mr-2" />
-            Load Sample Data
-          </Button>
-        )}
       </div>
 
       {/* Stats Grid */}
