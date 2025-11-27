@@ -19,18 +19,9 @@ function App() {
               <Route path="/" element={<Landing />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
-              <Route
-                path="/dashboard/*"
-                element={
-                  <Layout>
-                    <Routes>
-                      <Route path="/" element={<Dashboard />} />
-                      <Route path="/employees" element={<Employees />} />
-                      <Route path="/tasks" element={<Tasks />} />
-                    </Routes>
-                  </Layout>
-                }
-              />
+              <Route path="/dashboard" element={<Layout><Dashboard /></Layout>} />
+              <Route path="/dashboard/employees" element={<Layout><Employees /></Layout>} />
+              <Route path="/dashboard/tasks" element={<Layout><Tasks /></Layout>} />
             </Routes>
           </Router>
         </AuthProvider>
