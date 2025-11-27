@@ -49,12 +49,16 @@ let nextEmployeeId = 7;
 let nextTaskId = 9;
 
 const demoStats = () => ({
-  totalEmployees: localEmployees.length,
-  activeEmployees: localEmployees.filter(e => e.status === 'active').length,
-  totalTasks: localTasks.length,
-  completedTasks: localTasks.filter(t => t.status === 'completed').length,
-  pendingTasks: localTasks.filter(t => t.status === 'pending').length,
-  inProgressTasks: localTasks.filter(t => t.status === 'in-progress').length,
+  employees: {
+    total: localEmployees.length,
+    active: localEmployees.filter(e => e.status === 'active').length,
+  },
+  tasks: {
+    total: localTasks.length,
+    completed: localTasks.filter(t => t.status === 'completed').length,
+    pending: localTasks.filter(t => t.status === 'pending').length,
+    inProgress: localTasks.filter(t => t.status === 'in-progress').length,
+  },
   recentTasks: localTasks.slice(0, 5),
   tasksByStatus: [
     { name: 'Pending', value: localTasks.filter(t => t.status === 'pending').length },
