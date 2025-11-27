@@ -252,15 +252,6 @@ cd frontend && npm install && npm run dev
 3. **No File Uploads**: Employee avatars are placeholder-based
 4. **Local Database**: Using SQLite for simplicity; can be migrated to PostgreSQL for production
 
-## 🔮 Future Improvements
-
-- [ ] Email notifications for task assignments
-- [ ] Task comments and activity log
-- [ ] Employee performance analytics
-- [ ] ~~Drag-and-drop task board (Kanban view)~~ ✅ Implemented!
-- [ ] ~~Export data to CSV/Excel~~ ✅ Implemented!
-- [ ] ~~Dark mode support~~ ✅ Implemented!
-- [ ] Multi-language support
 
 ## 🧪 Testing
 
