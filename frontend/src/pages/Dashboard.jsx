@@ -133,7 +133,7 @@ const Dashboard = () => {
           value={stats?.employees?.total || 0}
           subtitle={`${stats?.employees?.active || 0} active`}
           color="bg-gradient-to-br from-emerald-500 to-emerald-600"
-          to="/employees"
+          to="/dashboard/employees"
         />
         <StatCard
           icon={CheckSquare}
@@ -141,7 +141,7 @@ const Dashboard = () => {
           value={stats?.tasks?.total || 0}
           subtitle={`${stats?.tasks?.completed || 0} completed`}
           color="bg-gradient-to-br from-amber-400 to-amber-500"
-          to="/tasks"
+          to="/dashboard/tasks"
         />
         <StatCard
           icon={Clock}
@@ -149,7 +149,7 @@ const Dashboard = () => {
           value={stats?.tasks?.inProgress || 0}
           subtitle="Tasks being worked on"
           color="bg-gradient-to-br from-teal-500 to-teal-600"
-          to="/tasks"
+          to="/dashboard/tasks"
         />
         <StatCard
           icon={AlertCircle}
@@ -157,7 +157,7 @@ const Dashboard = () => {
           value={stats?.tasks?.pending || 0}
           subtitle="Awaiting action"
           color="bg-gradient-to-br from-orange-400 to-orange-500"
-          to="/tasks"
+          to="/dashboard/tasks"
         />
       </div>
 
@@ -254,7 +254,7 @@ const Dashboard = () => {
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden hover:shadow-lg transition-shadow">
           <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Recent Employees</h3>
-            <Link to="/employees" className="text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 text-sm font-medium flex items-center">
+            <Link to="/dashboard/employees" className="text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 text-sm font-medium flex items-center">
               View all <ArrowRight size={16} className="ml-1" />
             </Link>
           </div>

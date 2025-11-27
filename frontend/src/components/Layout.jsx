@@ -24,14 +24,14 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
   const [showUserMenu, setShowUserMenu] = useState(false);
 
   const menuItems = [
-    { path: '/', icon: LayoutDashboard, label: 'Dashboard' },
-    { path: '/employees', icon: Users, label: 'Employees' },
-    { path: '/tasks', icon: CheckSquare, label: 'Tasks' },
+    { path: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+    { path: '/dashboard/employees', icon: Users, label: 'Employees' },
+    { path: '/dashboard/tasks', icon: CheckSquare, label: 'Tasks' },
   ];
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    navigate('/');
   };
 
   return (

@@ -3,6 +3,7 @@ import { AuthProvider } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { ToastProvider } from './context/ToastContext';
 import Layout from './components/Layout';
+import Landing from './pages/Landing';
 import Dashboard from './pages/Dashboard';
 import Employees from './pages/Employees';
 import Tasks from './pages/Tasks';
@@ -15,10 +16,11 @@ function App() {
         <AuthProvider>
           <Router>
             <Routes>
+              <Route path="/" element={<Landing />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route
-                path="/*"
+                path="/dashboard/*"
                 element={
                   <Layout>
                     <Routes>

@@ -91,7 +91,7 @@ const Login = () => {
     try {
       setLoading(true);
       await login(email, password);
-      navigate('/');
+      navigate('/dashboard');
     } catch (err) {
       setError(err.response?.data?.error || 'Failed to login');
     } finally {
@@ -164,7 +164,7 @@ const Login = () => {
           <Button 
             variant="ghost" 
             className="w-full"
-            onClick={() => navigate('/')}
+            onClick={() => navigate('/dashboard')}
           >
             Continue without login
           </Button>
@@ -206,7 +206,7 @@ const Register = () => {
     try {
       setLoading(true);
       await register(name, email, password);
-      navigate('/');
+      navigate('/dashboard');
     } catch (err) {
       setError(err.response?.data?.error || 'Failed to register');
     } finally {
