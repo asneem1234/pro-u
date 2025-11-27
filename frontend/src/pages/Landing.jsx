@@ -102,13 +102,13 @@ const Landing = () => {
     {
       icon: Zap,
       title: 'Lightning Fast',
-      description: 'Built with modern technology for blazing fast performance and smooth interactions.',
+      description: 'Built with React, Vite & Tailwind CSS for blazing fast performance.',
       color: 'from-yellow-400 to-amber-500',
     },
     {
       icon: Shield,
       title: 'Secure & Reliable',
-      description: 'Enterprise-grade security with JWT authentication and encrypted data.',
+      description: 'JWT authentication, SQLite database, and Express.js backend.',
       color: 'from-emerald-600 to-green-700',
     },
     {
@@ -119,11 +119,14 @@ const Landing = () => {
     },
   ];
 
-  const stats = [
-    { value: '99.9%', label: 'Uptime' },
-    { value: '10k+', label: 'Users' },
-    { value: '50k+', label: 'Tasks Completed' },
-    { value: '4.9/5', label: 'Rating' },
+  const techStack = [
+    { name: 'React', color: 'bg-cyan-500' },
+    { name: 'Vite', color: 'bg-purple-500' },
+    { name: 'Tailwind CSS', color: 'bg-teal-500' },
+    { name: 'Node.js', color: 'bg-green-500' },
+    { name: 'Express.js', color: 'bg-gray-500' },
+    { name: 'SQLite', color: 'bg-blue-500' },
+    { name: 'JWT Auth', color: 'bg-amber-500' },
   ];
 
   return (
@@ -163,49 +166,55 @@ const Landing = () => {
           <div className="max-w-7xl mx-auto text-center">
             <div className="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 rounded-full px-4 py-2 mb-8">
               <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
-              <span className="text-emerald-400 text-sm font-medium">Trusted by 10,000+ companies</span>
+              <span className="text-emerald-400 text-sm font-medium">Full-Stack Development Assessment</span>
             </div>
             
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight">
-              Manage Your Team
+              Employee & Task
               <span className="block bg-gradient-to-r from-emerald-400 via-teal-400 to-amber-400 bg-clip-text text-transparent">
-                Like Never Before
+                Management System
               </span>
             </h1>
             
-            <p className="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto mb-10">
-              The all-in-one platform for employee management and task tracking. 
-              Boost productivity, streamline workflows, and achieve more together.
+            <p className="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto mb-6">
+              A comprehensive full-stack application for managing employees and tasks. 
+              Built with modern technologies featuring a beautiful UI, dark mode, and interactive dashboards.
+            </p>
+
+            <p className="text-emerald-400 font-semibold text-lg mb-10">
+              Developed by <span className="text-amber-400">ASNEEM ATHAR SHAIK</span>
             </p>
             
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link 
-                to="/register" 
+                to="/dashboard" 
                 className="group bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-8 py-4 rounded-2xl font-bold text-lg hover:shadow-2xl hover:shadow-emerald-500/30 transition-all hover:-translate-y-1 flex items-center gap-2"
               >
-                Start Free Trial
+                View Demo
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
-              <button className="group flex items-center gap-3 text-gray-300 hover:text-white px-6 py-4 rounded-2xl border border-gray-700 hover:border-gray-500 transition-all">
+              <Link 
+                to="/login"
+                className="group flex items-center gap-3 text-gray-300 hover:text-white px-6 py-4 rounded-2xl border border-gray-700 hover:border-gray-500 transition-all"
+              >
                 <div className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center group-hover:bg-white/20 transition-colors">
                   <Play className="w-4 h-4 fill-white" />
                 </div>
-                Watch Demo
-              </button>
+                Login / Register
+              </Link>
             </div>
           </div>
         </section>
 
-        {/* Stats Section */}
+        {/* Tech Stack Section */}
         <section className="px-6 py-12 lg:px-12 border-y border-gray-800">
           <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-              {stats.map((stat, i) => (
-                <div key={i} className="text-center">
-                  <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-emerald-400 to-amber-400 bg-clip-text text-transparent mb-2">
-                    {stat.value}
-                  </div>
-                  <div className="text-gray-500 font-medium">{stat.label}</div>
+            <p className="text-center text-gray-500 text-sm uppercase tracking-wider mb-6">Built With</p>
+            <div className="flex flex-wrap items-center justify-center gap-4">
+              {techStack.map((tech, i) => (
+                <div key={i} className="flex items-center gap-2 bg-gray-800/50 px-4 py-2 rounded-full border border-gray-700">
+                  <div className={`w-2 h-2 rounded-full ${tech.color}`}></div>
+                  <span className="text-gray-300 font-medium text-sm">{tech.name}</span>
                 </div>
               ))}
             </div>
@@ -241,30 +250,40 @@ const Landing = () => {
           </div>
         </section>
 
-        {/* CTA Section */}
+        {/* About Developer Section */}
         <section className="px-6 py-24 lg:px-12">
           <div className="max-w-4xl mx-auto">
             <div className="bg-gradient-to-br from-emerald-900/50 to-teal-900/50 backdrop-blur-sm border border-emerald-500/20 rounded-3xl p-8 md:p-12 text-center">
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-                Ready to Get Started?
+              <div className="w-24 h-24 bg-gradient-to-br from-emerald-400 to-amber-400 rounded-full flex items-center justify-center mx-auto mb-6 shadow-2xl shadow-emerald-500/30">
+                <span className="text-4xl font-bold text-white">A</span>
+              </div>
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-2">
+                ASNEEM ATHAR SHAIK
               </h2>
+              <p className="text-emerald-400 font-semibold text-lg mb-6">
+                Full-Stack Developer
+              </p>
               <p className="text-gray-300 text-lg mb-8 max-w-xl mx-auto">
-                Join thousands of teams already using ProU to manage their workforce efficiently.
+                This Employee & Task Management System was built as part of the ProU Technology 
+                Full-Stack Development Assessment. It demonstrates proficiency in React, Node.js, 
+                Express, SQLite, and modern UI/UX design principles.
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                 <Link 
-                  to="/register" 
+                  to="/dashboard" 
                   className="bg-gradient-to-r from-amber-400 to-amber-500 text-emerald-900 px-8 py-4 rounded-2xl font-bold text-lg hover:shadow-2xl hover:shadow-amber-500/30 transition-all hover:-translate-y-1 flex items-center gap-2"
                 >
-                  Create Free Account
+                  Explore the App
                   <ChevronRight className="w-5 h-5" />
                 </Link>
-                <Link 
-                  to="/login" 
+                <a 
+                  href="https://github.com/asneem1234/pro-u" 
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="text-white px-8 py-4 rounded-2xl font-semibold border border-white/20 hover:bg-white/10 transition-all"
                 >
-                  Sign In
-                </Link>
+                  View on GitHub
+                </a>
               </div>
             </div>
           </div>
@@ -277,12 +296,10 @@ const Landing = () => {
               <div className="w-8 h-8 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold">P</span>
               </div>
-              <span className="text-gray-400 font-medium">ProU © 2025</span>
+              <span className="text-gray-400 font-medium">ProU Assessment © 2025</span>
             </div>
-            <div className="flex items-center gap-6 text-gray-500 text-sm">
-              <a href="#" className="hover:text-gray-300 transition-colors">Privacy</a>
-              <a href="#" className="hover:text-gray-300 transition-colors">Terms</a>
-              <a href="#" className="hover:text-gray-300 transition-colors">Contact</a>
+            <div className="text-gray-500 text-sm">
+              Built by <span className="text-emerald-400 font-medium">ASNEEM ATHAR SHAIK</span>
             </div>
           </div>
         </footer>
