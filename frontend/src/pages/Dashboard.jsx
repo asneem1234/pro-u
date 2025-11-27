@@ -68,11 +68,11 @@ const Dashboard = () => {
     }
   };
 
-  const COLORS = ['#4F46E5', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899'];
+  const COLORS = ['#059669', '#D97706', '#0D9488', '#CA8A04', '#047857', '#B45309'];
 
   const StatCard = ({ icon: Icon, title, value, subtitle, color, to }) => (
-    <Link to={to} className="block">
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition-all duration-200 hover:border-indigo-200 dark:hover:border-indigo-600">
+    <Link to={to} className="block group">
+      <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 hover:shadow-2xl hover:shadow-emerald-500/10 transition-all duration-500 hover:border-emerald-300 dark:hover:border-emerald-500 hover:-translate-y-2 hover:bg-white dark:hover:bg-gray-800 group-hover:scale-[1.02]">
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm font-medium text-gray-500 dark:text-gray-400">{title}</p>
@@ -81,7 +81,7 @@ const Dashboard = () => {
             </p>
             {subtitle && <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{subtitle}</p>}
           </div>
-          <div className={`w-12 h-12 ${color} rounded-lg flex items-center justify-center`}>
+          <div className={`w-12 h-12 ${color} rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg group-hover:rotate-3`}>
             <Icon className="text-white" size={24} />
           </div>
         </div>
@@ -118,7 +118,7 @@ const Dashboard = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <Loader className="w-8 h-8 animate-spin text-indigo-600" />
+        <Loader className="w-8 h-8 animate-spin text-emerald-600" />
       </div>
     );
   }
@@ -158,7 +158,7 @@ const Dashboard = () => {
           title="Total Employees"
           value={stats?.employees?.total || 0}
           subtitle={`${stats?.employees?.active || 0} active`}
-          color="bg-indigo-600"
+          color="bg-gradient-to-br from-emerald-500 to-emerald-600"
           to="/employees"
         />
         <StatCard
@@ -166,7 +166,7 @@ const Dashboard = () => {
           title="Total Tasks"
           value={stats?.tasks?.total || 0}
           subtitle={`${stats?.tasks?.completed || 0} completed`}
-          color="bg-green-600"
+          color="bg-gradient-to-br from-amber-400 to-amber-500"
           to="/tasks"
         />
         <StatCard
@@ -174,7 +174,7 @@ const Dashboard = () => {
           title="In Progress"
           value={stats?.tasks?.inProgress || 0}
           subtitle="Tasks being worked on"
-          color="bg-blue-600"
+          color="bg-gradient-to-br from-teal-500 to-teal-600"
           to="/tasks"
         />
         <StatCard
@@ -182,7 +182,7 @@ const Dashboard = () => {
           title="Pending Tasks"
           value={stats?.tasks?.pending || 0}
           subtitle="Awaiting action"
-          color="bg-yellow-600"
+          color="bg-gradient-to-br from-orange-400 to-orange-500"
           to="/tasks"
         />
       </div>
@@ -191,7 +191,7 @@ const Dashboard = () => {
       {hasData && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Department Distribution */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 hover:shadow-lg transition-shadow">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Employees by Department</h3>
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
@@ -206,14 +206,14 @@ const Dashboard = () => {
                       borderRadius: '8px'
                     }} 
                   />
-                  <Bar dataKey="count" fill="#4F46E5" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="count" fill="#059669" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
           </div>
 
           {/* Task Priority Distribution */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 hover:shadow-lg transition-shadow">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Tasks by Priority</h3>
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
@@ -245,10 +245,10 @@ const Dashboard = () => {
       {/* Recent Activity */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recent Tasks */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden hover:shadow-lg transition-shadow">
           <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Recent Tasks</h3>
-            <Link to="/tasks" className="text-indigo-600 hover:text-indigo-700 text-sm font-medium flex items-center">
+            <Link to="/tasks" className="text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 text-sm font-medium flex items-center">
               View all <ArrowRight size={16} className="ml-1" />
             </Link>
           </div>
@@ -277,10 +277,10 @@ const Dashboard = () => {
         </div>
 
         {/* Recent Employees */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden hover:shadow-lg transition-shadow">
           <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Recent Employees</h3>
-            <Link to="/employees" className="text-indigo-600 hover:text-indigo-700 text-sm font-medium flex items-center">
+            <Link to="/employees" className="text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 text-sm font-medium flex items-center">
               View all <ArrowRight size={16} className="ml-1" />
             </Link>
           </div>
@@ -293,8 +293,8 @@ const Dashboard = () => {
               (stats?.recentEmployees || []).map((employee) => (
                 <div key={employee.id} className="px-6 py-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
                   <div className="flex items-center space-x-4">
-                    <div className="w-10 h-10 bg-indigo-100 dark:bg-indigo-900/50 rounded-full flex items-center justify-center">
-                      <span className="text-indigo-600 dark:text-indigo-400 font-semibold">
+                    <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-full flex items-center justify-center shadow-sm">
+                      <span className="text-white font-semibold">
                         {employee.name.charAt(0).toUpperCase()}
                       </span>
                     </div>
@@ -304,7 +304,7 @@ const Dashboard = () => {
                     </div>
                     <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                       employee.status === 'active' 
-                        ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' 
+                        ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400' 
                         : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-400'
                     }`}>
                       {employee.status}

@@ -15,7 +15,7 @@ import {
   AlertTriangle,
   Download,
   LayoutGrid,
-  List
+  LayoutList
 } from 'lucide-react';
 import { taskAPI, employeeAPI } from '../api';
 import Button from '../components/Button';
@@ -222,6 +222,9 @@ const Tasks = () => {
 
   const hasActiveFilters = searchQuery || filterStatus || filterPriority || filterEmployee;
 
+  // Tasks are already filtered by the API, so filteredTasks = tasks
+  const filteredTasks = tasks;
+
   const getStatusIcon = (status) => {
     switch (status) {
       case 'completed': return <CheckCircle className="w-4 h-4 text-green-500" />;
@@ -269,7 +272,7 @@ const Tasks = () => {
   if (loading && tasks.length === 0) {
     return (
       <div className="flex items-center justify-center h-64">
-        <Loader className="w-8 h-8 animate-spin text-indigo-600" />
+        <Loader className="w-8 h-8 animate-spin text-emerald-600" />
       </div>
     );
   }
@@ -279,17 +282,17 @@ const Tasks = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Tasks</h1>
+          <h1 className="text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent">Tasks</h1>
           <p className="text-gray-500 dark:text-gray-400">Manage and track your team's tasks</p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           {/* View Mode Toggle */}
-          <div className="flex items-center bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
+          <div className="flex items-center bg-stone-100 dark:bg-gray-700 rounded-xl p-1">
             <button
               onClick={() => setViewMode('list')}
-              className={`p-2 rounded-md transition-colors ${
+              className={`p-2.5 rounded-lg transition-all ${
                 viewMode === 'list' 
-                  ? 'bg-white dark:bg-gray-600 text-indigo-600 dark:text-indigo-400 shadow-sm' 
+                  ? 'bg-white dark:bg-gray-600 text-emerald-600 dark:text-emerald-400 shadow-sm' 
                   : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
               }`}
               title="List View"
@@ -298,9 +301,9 @@ const Tasks = () => {
             </button>
             <button
               onClick={() => setViewMode('kanban')}
-              className={`p-2 rounded-md transition-colors ${
+              className={`p-2.5 rounded-lg transition-all ${
                 viewMode === 'kanban' 
-                  ? 'bg-white dark:bg-gray-600 text-indigo-600 dark:text-indigo-400 shadow-sm' 
+                  ? 'bg-white dark:bg-gray-600 text-emerald-600 dark:text-emerald-400 shadow-sm' 
                   : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
               }`}
               title="Kanban View"
@@ -330,7 +333,7 @@ const Tasks = () => {
               placeholder="Search tasks..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
+              className="w-full pl-10 pr-4 py-2.5 border border-gray-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 hover:border-emerald-300 dark:hover:border-emerald-600 transition-colors"
             />
           </div>
           <Button 
@@ -340,7 +343,7 @@ const Tasks = () => {
             <Filter className="w-4 h-4 mr-2" />
             Filters
             {hasActiveFilters && (
-              <span className="ml-2 w-2 h-2 bg-indigo-500 rounded-full"></span>
+              <span className="ml-2 w-2 h-2 bg-emerald-500 rounded-full"></span>
             )}
           </Button>
         </div>
@@ -460,8 +463,8 @@ const Tasks = () => {
                           <div className="flex items-center">
                             {task.employee_name ? (
                               <>
-                                <div className="w-8 h-8 bg-indigo-100 dark:bg-indigo-900/30 rounded-full flex items-center justify-center mr-2">
-                                  <span className="text-indigo-600 dark:text-indigo-400 font-medium text-sm">
+                                <div className="w-8 h-8 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-full flex items-center justify-center mr-2">
+                                  <span className="text-white font-medium text-sm">
                                     {task.employee_name.charAt(0)}
                                   </span>
                                 </div>
@@ -481,7 +484,7 @@ const Tasks = () => {
                               <Calendar size={14} className="mr-1" />
                               {new Date(task.due_date).toLocaleDateString()}
                               {isOverdue(task.due_date) && task.status !== 'completed' && (
-                                <span className="ml-2 text-xs bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 px-1.5 py-0.5 rounded">Overdue</span>
+                                <span className="ml-2 text-xs bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 px-1.5 py-0.5 rounded-lg">Overdue</span>
                               )}
                             </div>
                           ) : (
@@ -492,7 +495,7 @@ const Tasks = () => {
                           <select
                             value={task.status}
                             onChange={(e) => handleStatusChange(task, e.target.value)}
-                            className="text-sm border border-gray-300 dark:border-gray-600 rounded-lg px-2 py-1 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                            className="text-sm border border-gray-200 dark:border-gray-600 rounded-lg px-2 py-1 focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white hover:border-emerald-300"
                           >
                             {STATUS_OPTIONS.map(opt => (
                               <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -503,7 +506,7 @@ const Tasks = () => {
                           <div className="flex items-center justify-end space-x-2">
                             <button
                               onClick={() => openEditModal(task)}
-                              className="p-2 text-gray-400 dark:text-gray-500 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 rounded-lg transition-colors"
+                              className="p-2 text-gray-400 dark:text-gray-500 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 rounded-lg transition-colors"
                             >
                               <Edit2 size={16} />
                             </button>

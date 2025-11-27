@@ -5,17 +5,17 @@ const ToastContext = createContext(null);
 
 const ToastContainer = ({ toasts, removeToast }) => {
   const icons = {
-    success: <CheckCircle className="w-5 h-5 text-green-500" />,
+    success: <CheckCircle className="w-5 h-5 text-emerald-500" />,
     error: <XCircle className="w-5 h-5 text-red-500" />,
-    warning: <AlertCircle className="w-5 h-5 text-yellow-500" />,
-    info: <Info className="w-5 h-5 text-blue-500" />,
+    warning: <AlertCircle className="w-5 h-5 text-amber-500" />,
+    info: <Info className="w-5 h-5 text-teal-500" />,
   };
 
   const bgColors = {
-    success: 'bg-green-50 dark:bg-green-900/30 border-green-200 dark:border-green-800',
+    success: 'bg-emerald-50 dark:bg-emerald-900/30 border-emerald-200 dark:border-emerald-800',
     error: 'bg-red-50 dark:bg-red-900/30 border-red-200 dark:border-red-800',
-    warning: 'bg-yellow-50 dark:bg-yellow-900/30 border-yellow-200 dark:border-yellow-800',
-    info: 'bg-blue-50 dark:bg-blue-900/30 border-blue-200 dark:border-blue-800',
+    warning: 'bg-amber-50 dark:bg-amber-900/30 border-amber-200 dark:border-amber-800',
+    info: 'bg-teal-50 dark:bg-teal-900/30 border-teal-200 dark:border-teal-800',
   };
 
   return (
@@ -24,7 +24,7 @@ const ToastContainer = ({ toasts, removeToast }) => {
         <div
           key={toast.id}
           className={`
-            flex items-center gap-3 px-4 py-3 rounded-lg border shadow-lg
+            flex items-center gap-3 px-4 py-3 rounded-xl border shadow-lg backdrop-blur-sm
             animate-slideIn ${bgColors[toast.type]}
           `}
         >
