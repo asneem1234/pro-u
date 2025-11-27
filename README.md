@@ -1,17 +1,21 @@
-# Employee & Task Management System
+# 🏢 Employee & Task Management System
 
-A full-stack web application for managing employees and tasks, built as part of the ProU Technology assessment.
+A modern, full-stack web application for managing employees and tasks with a beautiful emerald & gold themed UI, interactive floating background, and comprehensive features.
 
-![Dashboard Preview](screenshots/dashboard.png)
+**Developed by: ASNEEM ATHAR SHAIK** | Full-Stack Developer
+
+![Landing Page](screenshots/landing.png)
 
 ## 🚀 Live Demo
 
-- **Frontend**: [Deployed on Netlify/Vercel](https://your-app.netlify.app)
-- **Backend**: [Deployed on Render/Railway](https://your-api.onrender.com)
+🌐 **[https://pro-u-delta.vercel.app/](https://pro-u-delta.vercel.app/)**
+
+> **Demo Mode**: The live app runs with mock data, allowing you to explore all features without backend setup. Login with any credentials to access the dashboard.
 
 ## 📋 Features
 
 ### Core Features
+- ✅ **Landing Page** - Beautiful hero section with animated background and developer info
 - ✅ **Employee Management** - Full CRUD operations for employees
 - ✅ **Task Management** - Create, assign, update, and track tasks
 - ✅ **Dashboard** - Visual overview with charts and statistics
@@ -21,7 +25,7 @@ A full-stack web application for managing employees and tasks, built as part of 
 ### Bonus Features
 - ✅ **User Authentication** - JWT-based login/register system
 - ✅ **Data Visualization** - Interactive charts using Recharts
-- ✅ **Sample Data Seeding** - One-click sample data generation
+- ✅ **Demo Mode** - Works without backend using mock data
 - ✅ **Task Status Updates** - Quick status change from task list
 - ✅ **Overdue Task Indicators** - Visual alerts for overdue tasks
 
@@ -31,6 +35,8 @@ A full-stack web application for managing employees and tasks, built as part of 
 - ✅ **Export to CSV** - Download employees and tasks data as CSV files
 - ✅ **Animated Counters** - Smooth number animations on dashboard stats
 - ✅ **Toast Notifications** - Real-time success/error feedback with auto-dismiss
+- ✅ **Floating Background** - Interactive animated orbs that glow on hover
+- ✅ **Emerald & Gold Theme** - Beautiful custom color scheme throughout the app
 
 ## 🛠️ Tech Stack
 
@@ -219,6 +225,14 @@ cd frontend && npm install && npm run dev
 
 ## 📸 Screenshots
 
+### Landing Page
+![Landing Page](screenshots/landing.png)
+
+### Login & Register
+| Login | Register |
+|-------|----------|
+| ![Login](screenshots/login.png) | ![Register](screenshots/register.png) |
+
 ### Dashboard
 ![Dashboard](screenshots/dashboard.png)
 
@@ -228,8 +242,8 @@ cd frontend && npm install && npm run dev
 ### Task Management
 ![Tasks](screenshots/tasks.png)
 
-### Mobile Responsive
-![Mobile](screenshots/mobile.png)
+### Kanban Board
+![Kanban](screenshots/kanban.png)
 
 ## 🎯 Assumptions Made
 
@@ -264,6 +278,7 @@ This project was created for the ProU Technology assessment.
 
 ---
 
-**Created by**: Asneem Athar Shaik  
-**Date**: November 2025  
-**Assessment**: ProU Technology - Full Stack Development Track
+**👨‍💻 Developer**: ASNEEM ATHAR SHAIK  
+**📅 Date**: November 2025  
+**🎯 Assessment**: ProU Technology - Full Stack Development Track  
+**🔗 Live Demo**: [https://pro-u-delta.vercel.app/](https://pro-u-delta.vercel.app/)
