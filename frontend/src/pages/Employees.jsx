@@ -11,12 +11,15 @@ import {
   Building,
   Briefcase,
   Filter,
-  X
+  X,
+  Download
 } from 'lucide-react';
 import { employeeAPI } from '../api';
 import Button from '../components/Button';
 import Modal from '../components/Modal';
 import { Input, Select, Textarea } from '../components/Input';
+import { useToast } from '../context/ToastContext';
+import { exportEmployeesToCSV } from '../utils/export';
 
 const DEPARTMENTS = [
   { value: 'Engineering', label: 'Engineering' },
@@ -41,6 +44,7 @@ const Employees = () => {
   const [filterDepartment, setFilterDepartment] = useState('');
   const [filterStatus, setFilterStatus] = useState('');
   const [showFilters, setShowFilters] = useState(false);
+  const toast = useToast();
   
   // Modal states
   const [showModal, setShowModal] = useState(false);
@@ -149,8 +153,10 @@ const Employees = () => {
 
       if (editingEmployee) {
         await employeeAPI.update(editingEmployee.id, data);
+        toast.success('Employee updated successfully!');
       } else {
         await employeeAPI.create(data);
+        toast.success('Employee added successfully!');
       }
       
       setShowModal(false);
@@ -158,6 +164,7 @@ const Employees = () => {
     } catch (err) {
       const message = err.response?.data?.error || 'Failed to save employee';
       setFormErrors({ submit: message });
+      toast.error(message);
     } finally {
       setSaving(false);
     }
@@ -168,12 +175,23 @@ const Employees = () => {
       setSaving(true);
       await employeeAPI.delete(deletingEmployee.id);
       setShowDeleteModal(false);
+      toast.success('Employee deleted successfully!');
       fetchEmployees();
     } catch (err) {
+      toast.error('Failed to delete employee');
       console.error(err);
     } finally {
       setSaving(false);
     }
+  };
+
+  const handleExport = () => {
+    if (employees.length === 0) {
+      toast.warning('No employees to export');
+      return;
+    }
+    exportEmployeesToCSV(employees);
+    toast.success('Employees exported to CSV!');
   };
 
   const clearFilters = () => {
@@ -197,17 +215,23 @@ const Employees = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Employees</h1>
-          <p className="text-gray-500">Manage your team members</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Employees</h1>
+          <p className="text-gray-500 dark:text-gray-400">Manage your team members</p>
         </div>
-        <Button onClick={openAddModal}>
-          <Plus className="w-4 h-4 mr-2" />
-          Add Employee
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="secondary" onClick={handleExport}>
+            <Download className="w-4 h-4 mr-2" />
+            Export CSV
+          </Button>
+          <Button onClick={openAddModal}>
+            <Plus className="w-4 h-4 mr-2" />
+            Add Employee
+          </Button>
+        </div>
       </div>
 
       {/* Search and Filters */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4">
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="flex-1 relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
@@ -216,7 +240,7 @@ const Employees = () => {
               placeholder="Search employees..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
             />
           </div>
           <Button 
@@ -233,7 +257,7 @@ const Employees = () => {
 
         {/* Filter Panel */}
         {showFilters && (
-          <div className="mt-4 pt-4 border-t border-gray-200 animate-fadeIn">
+          <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 animate-fadeIn">
             <div className="flex flex-col sm:flex-row gap-4">
               <Select
                 label="Department"
@@ -266,10 +290,10 @@ const Employees = () => {
 
       {/* Employee Grid */}
       {employees.length === 0 ? (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">
-          <AlertCircle className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">No employees found</h3>
-          <p className="text-gray-500 mb-4">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-12 text-center">
+          <AlertCircle className="w-12 h-12 text-gray-400 dark:text-gray-500 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No employees found</h3>
+          <p className="text-gray-500 dark:text-gray-400 mb-4">
             {hasActiveFilters ? 'Try adjusting your filters' : 'Get started by adding your first employee'}
           </p>
           {!hasActiveFilters && (
@@ -284,7 +308,7 @@ const Employees = () => {
           {employees.map((employee) => (
             <div 
               key={employee.id} 
-              className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-all duration-200 animate-slideIn"
+              className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition-all duration-200 animate-slideIn"
             >
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center space-x-3">
@@ -292,43 +316,43 @@ const Employees = () => {
                     {employee.name.charAt(0).toUpperCase()}
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900">{employee.name}</h3>
-                    <p className="text-sm text-gray-500">{employee.position}</p>
+                    <h3 className="font-semibold text-gray-900 dark:text-white">{employee.name}</h3>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">{employee.position}</p>
                   </div>
                 </div>
                 <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                   employee.status === 'active' 
-                    ? 'bg-green-100 text-green-800' 
-                    : 'bg-gray-100 text-gray-800'
+                    ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400' 
+                    : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300'
                 }`}>
                   {employee.status}
                 </span>
               </div>
 
               <div className="space-y-2 mb-4">
-                <div className="flex items-center text-sm text-gray-600">
-                  <Mail size={16} className="mr-2 text-gray-400" />
+                <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
+                  <Mail size={16} className="mr-2 text-gray-400 dark:text-gray-500" />
                   <span className="truncate">{employee.email}</span>
                 </div>
                 {employee.phone && (
-                  <div className="flex items-center text-sm text-gray-600">
-                    <Phone size={16} className="mr-2 text-gray-400" />
+                  <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
+                    <Phone size={16} className="mr-2 text-gray-400 dark:text-gray-500" />
                     <span>{employee.phone}</span>
                   </div>
                 )}
-                <div className="flex items-center text-sm text-gray-600">
-                  <Building size={16} className="mr-2 text-gray-400" />
+                <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
+                  <Building size={16} className="mr-2 text-gray-400 dark:text-gray-500" />
                   <span>{employee.department}</span>
                 </div>
                 {employee.salary && (
-                  <div className="flex items-center text-sm text-gray-600">
-                    <Briefcase size={16} className="mr-2 text-gray-400" />
+                  <div className="flex items-center text-sm text-gray-600 dark:text-gray-300">
+                    <Briefcase size={16} className="mr-2 text-gray-400 dark:text-gray-500" />
                     <span>${employee.salary.toLocaleString()}/year</span>
                   </div>
                 )}
               </div>
 
-              <div className="flex space-x-2 pt-4 border-t border-gray-100">
+              <div className="flex space-x-2 pt-4 border-t border-gray-100 dark:border-gray-700">
                 <Button 
                   variant="secondary" 
                   size="sm" 
@@ -362,7 +386,7 @@ const Employees = () => {
       >
         <form onSubmit={handleSubmit} className="space-y-4">
           {formErrors.submit && (
-            <div className="bg-red-50 text-red-600 px-4 py-3 rounded-lg text-sm">
+            <div className="bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 px-4 py-3 rounded-lg text-sm">
               {formErrors.submit}
             </div>
           )}
@@ -424,7 +448,7 @@ const Employees = () => {
             />
           </div>
 
-          <div className="flex justify-end space-x-3 pt-4 border-t border-gray-200">
+          <div className="flex justify-end space-x-3 pt-4 border-t border-gray-200 dark:border-gray-700">
             <Button type="button" variant="secondary" onClick={() => setShowModal(false)}>
               Cancel
             </Button>
@@ -443,13 +467,13 @@ const Employees = () => {
         size="sm"
       >
         <div className="text-center">
-          <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Trash2 className="w-6 h-6 text-red-600" />
+          <div className="w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Trash2 className="w-6 h-6 text-red-600 dark:text-red-400" />
           </div>
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
+          <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
             Delete {deletingEmployee?.name}?
           </h3>
-          <p className="text-gray-500 mb-6">
+          <p className="text-gray-500 dark:text-gray-400 mb-6">
             This action cannot be undone. All tasks assigned to this employee will be unassigned.
           </p>
           <div className="flex space-x-3">

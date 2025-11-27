@@ -25,6 +25,13 @@ A full-stack web application for managing employees and tasks, built as part of 
 - ✅ **Task Status Updates** - Quick status change from task list
 - ✅ **Overdue Task Indicators** - Visual alerts for overdue tasks
 
+### ✨ Standout Features
+- ✅ **Dark Mode** - Toggle between light and dark themes with localStorage persistence
+- ✅ **Kanban Board View** - Drag & drop task management with visual columns
+- ✅ **Export to CSV** - Download employees and tasks data as CSV files
+- ✅ **Animated Counters** - Smooth number animations on dashboard stats
+- ✅ **Toast Notifications** - Real-time success/error feedback with auto-dismiss
+
 ## 🛠️ Tech Stack
 
 ### Frontend
@@ -56,15 +63,26 @@ pro-u/
 │   ├── src/
 │   │   ├── api/           # API service functions
 │   │   ├── components/    # Reusable UI components
-│   │   ├── context/       # React context (Auth)
+│   │   │   ├── AnimatedCounter.jsx  # Smooth number animations
+│   │   │   ├── Button.jsx          # Customizable button
+│   │   │   ├── Input.jsx           # Form inputs & selects
+│   │   │   ├── Layout.jsx          # App layout with sidebar
+│   │   │   ├── Modal.jsx           # Reusable modal dialog
+│   │   │   └── TaskKanban.jsx      # Drag & drop kanban board
+│   │   ├── context/       # React context providers
+│   │   │   ├── AuthContext.jsx     # Authentication state
+│   │   │   ├── ThemeContext.jsx    # Dark mode toggle
+│   │   │   └── ToastContext.jsx    # Toast notifications
 │   │   ├── pages/         # Page components
+│   │   ├── utils/         # Utility functions
+│   │   │   └── export.js           # CSV/PDF export utilities
 │   │   ├── App.jsx        # Main app component
 │   │   ├── main.jsx       # Entry point
-│   │   └── index.css      # Global styles
+│   │   └── index.css      # Global styles & dark mode
 │   ├── index.html
 │   ├── package.json
 │   ├── vite.config.js
-│   ├── tailwind.config.js
+│   ├── tailwind.config.js # Dark mode configuration
 │   └── .gitignore
 │
 ├── screenshots/           # Application screenshots
@@ -225,9 +243,9 @@ cd frontend && npm install && npm run dev
 - [ ] Email notifications for task assignments
 - [ ] Task comments and activity log
 - [ ] Employee performance analytics
-- [ ] Drag-and-drop task board (Kanban view)
-- [ ] Export data to CSV/Excel
-- [ ] Dark mode support
+- [ ] ~~Drag-and-drop task board (Kanban view)~~ ✅ Implemented!
+- [ ] ~~Export data to CSV/Excel~~ ✅ Implemented!
+- [ ] ~~Dark mode support~~ ✅ Implemented!
 - [ ] Multi-language support
 
 ## 🧪 Testing

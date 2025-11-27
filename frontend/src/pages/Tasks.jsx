@@ -12,12 +12,18 @@ import {
   X,
   CheckCircle,
   Clock,
-  AlertTriangle
+  AlertTriangle,
+  Download,
+  LayoutGrid,
+  List
 } from 'lucide-react';
 import { taskAPI, employeeAPI } from '../api';
 import Button from '../components/Button';
 import Modal from '../components/Modal';
 import { Input, Select, Textarea } from '../components/Input';
+import { useToast } from '../context/ToastContext';
+import { exportTasksToCSV } from '../utils/export';
+import TaskKanban from '../components/TaskKanban';
 
 const STATUS_OPTIONS = [
   { value: 'pending', label: 'Pending' },
@@ -41,6 +47,8 @@ const Tasks = () => {
   const [filterPriority, setFilterPriority] = useState('');
   const [filterEmployee, setFilterEmployee] = useState('');
   const [showFilters, setShowFilters] = useState(false);
+  const [viewMode, setViewMode] = useState('list'); // 'list' or 'kanban'
+  const toast = useToast();
   
   // Modal states
   const [showModal, setShowModal] = useState(false);
@@ -153,8 +161,10 @@ const Tasks = () => {
 
       if (editingTask) {
         await taskAPI.update(editingTask.id, data);
+        toast.success('Task updated successfully!');
       } else {
         await taskAPI.create(data);
+        toast.success('Task created successfully!');
       }
       
       setShowModal(false);
@@ -162,6 +172,7 @@ const Tasks = () => {
     } catch (err) {
       const message = err.response?.data?.error || 'Failed to save task';
       setFormErrors({ submit: message });
+      toast.error(message);
     } finally {
       setSaving(false);
     }
@@ -172,8 +183,10 @@ const Tasks = () => {
       setSaving(true);
       await taskAPI.delete(deletingTask.id);
       setShowDeleteModal(false);
+      toast.success('Task deleted successfully!');
       fetchTasks();
     } catch (err) {
+      toast.error('Failed to delete task');
       console.error(err);
     } finally {
       setSaving(false);
@@ -183,10 +196,21 @@ const Tasks = () => {
   const handleStatusChange = async (task, newStatus) => {
     try {
       await taskAPI.update(task.id, { ...task, status: newStatus });
+      toast.success(`Task marked as ${newStatus.replace('-', ' ')}`);
       fetchTasks();
     } catch (err) {
+      toast.error('Failed to update status');
       console.error(err);
     }
+  };
+
+  const handleExport = () => {
+    if (tasks.length === 0) {
+      toast.warning('No tasks to export');
+      return;
+    }
+    exportTasksToCSV(tasks);
+    toast.success('Tasks exported to CSV!');
   };
 
   const clearFilters = () => {
@@ -208,9 +232,9 @@ const Tasks = () => {
 
   const getStatusBadge = (status) => {
     const styles = {
-      pending: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-      'in-progress': 'bg-blue-100 text-blue-800 border-blue-200',
-      completed: 'bg-green-100 text-green-800 border-green-200',
+      pending: 'bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-400 dark:border-yellow-800',
+      'in-progress': 'bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800',
+      completed: 'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/30 dark:text-green-400 dark:border-green-800',
     };
     return (
       <span className={`px-3 py-1 rounded-full text-xs font-medium border ${styles[status] || styles.pending}`}>
@@ -255,26 +279,58 @@ const Tasks = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Tasks</h1>
-          <p className="text-gray-500">Manage and track your team's tasks</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Tasks</h1>
+          <p className="text-gray-500 dark:text-gray-400">Manage and track your team's tasks</p>
         </div>
-        <Button onClick={openAddModal}>
-          <Plus className="w-4 h-4 mr-2" />
-          Add Task
-        </Button>
+        <div className="flex items-center gap-2">
+          {/* View Mode Toggle */}
+          <div className="flex items-center bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
+            <button
+              onClick={() => setViewMode('list')}
+              className={`p-2 rounded-md transition-colors ${
+                viewMode === 'list' 
+                  ? 'bg-white dark:bg-gray-600 text-indigo-600 dark:text-indigo-400 shadow-sm' 
+                  : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+              }`}
+              title="List View"
+            >
+              <LayoutList className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => setViewMode('kanban')}
+              className={`p-2 rounded-md transition-colors ${
+                viewMode === 'kanban' 
+                  ? 'bg-white dark:bg-gray-600 text-indigo-600 dark:text-indigo-400 shadow-sm' 
+                  : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+              }`}
+              title="Kanban View"
+            >
+              <LayoutGrid className="w-4 h-4" />
+            </button>
+          </div>
+          {/* Export Button */}
+          <Button variant="secondary" onClick={() => handleExport('csv')}>
+            <Download className="w-4 h-4 mr-2" />
+            Export
+          </Button>
+          <Button onClick={openAddModal}>
+            <Plus className="w-4 h-4 mr-2" />
+            Add Task
+          </Button>
+        </div>
       </div>
 
       {/* Search and Filters */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4">
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500" size={20} />
             <input
               type="text"
               placeholder="Search tasks..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
             />
           </div>
           <Button 
@@ -291,7 +347,7 @@ const Tasks = () => {
 
         {/* Filter Panel */}
         {showFilters && (
-          <div className="mt-4 pt-4 border-t border-gray-200 animate-fadeIn">
+          <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 animate-fadeIn">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <Select
                 label="Status"
@@ -330,10 +386,10 @@ const Tasks = () => {
       {/* Task Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         {[
-          { label: 'Total', count: tasks.length, color: 'bg-gray-100 text-gray-800' },
-          { label: 'Pending', count: tasks.filter(t => t.status === 'pending').length, color: 'bg-yellow-100 text-yellow-800' },
-          { label: 'In Progress', count: tasks.filter(t => t.status === 'in-progress').length, color: 'bg-blue-100 text-blue-800' },
-          { label: 'Completed', count: tasks.filter(t => t.status === 'completed').length, color: 'bg-green-100 text-green-800' },
+          { label: 'Total', count: tasks.length, color: 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200' },
+          { label: 'Pending', count: tasks.filter(t => t.status === 'pending').length, color: 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-400' },
+          { label: 'In Progress', count: tasks.filter(t => t.status === 'in-progress').length, color: 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-400' },
+          { label: 'Completed', count: tasks.filter(t => t.status === 'completed').length, color: 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400' },
         ].map(stat => (
           <div key={stat.label} className={`${stat.color} rounded-lg px-4 py-3 text-center`}>
             <div className="text-2xl font-bold">{stat.count}</div>
@@ -342,116 +398,131 @@ const Tasks = () => {
         ))}
       </div>
 
-      {/* Tasks List */}
-      {tasks.length === 0 ? (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">
-          <AlertCircle className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">No tasks found</h3>
-          <p className="text-gray-500 mb-4">
-            {hasActiveFilters ? 'Try adjusting your filters' : 'Get started by creating your first task'}
-          </p>
-          {!hasActiveFilters && (
-            <Button onClick={openAddModal}>
-              <Plus className="w-4 h-4 mr-2" />
-              Add Task
-            </Button>
-          )}
-        </div>
+      {/* Kanban View */}
+      {viewMode === 'kanban' ? (
+        <TaskKanban 
+          tasks={filteredTasks} 
+          onStatusChange={(taskId, newStatus) => {
+            const task = tasks.find(t => t.id === taskId);
+            if (task) handleStatusChange(task, newStatus);
+          }}
+          onEdit={openEditModal}
+          onDelete={handleDelete}
+        />
       ) : (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50 border-b border-gray-200">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Task</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Assigned To</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Priority</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Due Date</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200">
-                {tasks.map((task) => (
-                  <tr key={task.id} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-6 py-4">
-                      <div className="flex items-start space-x-3">
-                        {getStatusIcon(task.status)}
-                        <div>
-                          <p className={`font-medium ${task.status === 'completed' ? 'text-gray-500 line-through' : 'text-gray-900'}`}>
-                            {task.title}
-                          </p>
-                          {task.description && (
-                            <p className="text-sm text-gray-500 mt-1 line-clamp-1">{task.description}</p>
-                          )}
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center">
-                        {task.employee_name ? (
-                          <>
-                            <div className="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center mr-2">
-                              <span className="text-indigo-600 font-medium text-sm">
-                                {task.employee_name.charAt(0)}
-                              </span>
+        <>
+          {/* Tasks List */}
+          {filteredTasks.length === 0 ? (
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-12 text-center">
+              <AlertCircle className="w-12 h-12 text-gray-400 dark:text-gray-500 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No tasks found</h3>
+              <p className="text-gray-500 dark:text-gray-400 mb-4">
+                {hasActiveFilters ? 'Try adjusting your filters' : 'Get started by creating your first task'}
+              </p>
+              {!hasActiveFilters && (
+                <Button onClick={openAddModal}>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add Task
+                </Button>
+              )}
+            </div>
+          ) : (
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-gray-50 dark:bg-gray-700/50 border-b border-gray-200 dark:border-gray-700">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Task</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Assigned To</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Priority</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Due Date</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Status</th>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                    {filteredTasks.map((task) => (
+                      <tr key={task.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                        <td className="px-6 py-4">
+                          <div className="flex items-start space-x-3">
+                            {getStatusIcon(task.status)}
+                            <div>
+                              <p className={`font-medium ${task.status === 'completed' ? 'text-gray-500 dark:text-gray-400 line-through' : 'text-gray-900 dark:text-white'}`}>
+                                {task.title}
+                              </p>
+                              {task.description && (
+                                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 line-clamp-1">{task.description}</p>
+                              )}
                             </div>
-                            <span className="text-sm text-gray-900">{task.employee_name}</span>
-                          </>
-                        ) : (
-                          <span className="text-sm text-gray-400">Unassigned</span>
-                        )}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      {getPriorityBadge(task.priority)}
-                    </td>
-                    <td className="px-6 py-4">
-                      {task.due_date ? (
-                        <div className={`flex items-center text-sm ${isOverdue(task.due_date) && task.status !== 'completed' ? 'text-red-600' : 'text-gray-600'}`}>
-                          <Calendar size={14} className="mr-1" />
-                          {new Date(task.due_date).toLocaleDateString()}
-                          {isOverdue(task.due_date) && task.status !== 'completed' && (
-                            <span className="ml-2 text-xs bg-red-100 text-red-600 px-1.5 py-0.5 rounded">Overdue</span>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="flex items-center">
+                            {task.employee_name ? (
+                              <>
+                                <div className="w-8 h-8 bg-indigo-100 dark:bg-indigo-900/30 rounded-full flex items-center justify-center mr-2">
+                                  <span className="text-indigo-600 dark:text-indigo-400 font-medium text-sm">
+                                    {task.employee_name.charAt(0)}
+                                  </span>
+                                </div>
+                                <span className="text-sm text-gray-900 dark:text-white">{task.employee_name}</span>
+                              </>
+                            ) : (
+                              <span className="text-sm text-gray-400 dark:text-gray-500">Unassigned</span>
+                            )}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          {getPriorityBadge(task.priority)}
+                        </td>
+                        <td className="px-6 py-4">
+                          {task.due_date ? (
+                            <div className={`flex items-center text-sm ${isOverdue(task.due_date) && task.status !== 'completed' ? 'text-red-600 dark:text-red-400' : 'text-gray-600 dark:text-gray-300'}`}>
+                              <Calendar size={14} className="mr-1" />
+                              {new Date(task.due_date).toLocaleDateString()}
+                              {isOverdue(task.due_date) && task.status !== 'completed' && (
+                                <span className="ml-2 text-xs bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 px-1.5 py-0.5 rounded">Overdue</span>
+                              )}
+                            </div>
+                          ) : (
+                            <span className="text-sm text-gray-400 dark:text-gray-500">No due date</span>
                           )}
-                        </div>
-                      ) : (
-                        <span className="text-sm text-gray-400">No due date</span>
-                      )}
-                    </td>
-                    <td className="px-6 py-4">
-                      <select
-                        value={task.status}
-                        onChange={(e) => handleStatusChange(task, e.target.value)}
-                        className="text-sm border border-gray-300 rounded-lg px-2 py-1 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                      >
-                        {STATUS_OPTIONS.map(opt => (
-                          <option key={opt.value} value={opt.value}>{opt.label}</option>
-                        ))}
-                      </select>
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      <div className="flex items-center justify-end space-x-2">
-                        <button
-                          onClick={() => openEditModal(task)}
-                          className="p-2 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
-                        >
-                          <Edit2 size={16} />
-                        </button>
-                        <button
-                          onClick={() => openDeleteModal(task)}
-                          className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                        >
-                          <Trash2 size={16} />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
+                        </td>
+                        <td className="px-6 py-4">
+                          <select
+                            value={task.status}
+                            onChange={(e) => handleStatusChange(task, e.target.value)}
+                            className="text-sm border border-gray-300 dark:border-gray-600 rounded-lg px-2 py-1 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                          >
+                            {STATUS_OPTIONS.map(opt => (
+                              <option key={opt.value} value={opt.value}>{opt.label}</option>
+                            ))}
+                          </select>
+                        </td>
+                        <td className="px-6 py-4 text-right">
+                          <div className="flex items-center justify-end space-x-2">
+                            <button
+                              onClick={() => openEditModal(task)}
+                              className="p-2 text-gray-400 dark:text-gray-500 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 rounded-lg transition-colors"
+                            >
+                              <Edit2 size={16} />
+                            </button>
+                            <button
+                              onClick={() => openDeleteModal(task)}
+                              className="p-2 text-gray-400 dark:text-gray-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
             </table>
           </div>
         </div>
+          )}
+        </>
       )}
 
       {/* Add/Edit Modal */}
@@ -463,7 +534,7 @@ const Tasks = () => {
       >
         <form onSubmit={handleSubmit} className="space-y-4">
           {formErrors.submit && (
-            <div className="bg-red-50 text-red-600 px-4 py-3 rounded-lg text-sm">
+            <div className="bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 px-4 py-3 rounded-lg text-sm">
               {formErrors.submit}
             </div>
           )}
@@ -511,7 +582,7 @@ const Tasks = () => {
             />
           </div>
 
-          <div className="flex justify-end space-x-3 pt-4 border-t border-gray-200">
+          <div className="flex justify-end space-x-3 pt-4 border-t border-gray-200 dark:border-gray-700">
             <Button type="button" variant="secondary" onClick={() => setShowModal(false)}>
               Cancel
             </Button>
@@ -530,13 +601,13 @@ const Tasks = () => {
         size="sm"
       >
         <div className="text-center">
-          <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Trash2 className="w-6 h-6 text-red-600" />
+          <div className="w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Trash2 className="w-6 h-6 text-red-600 dark:text-red-400" />
           </div>
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
+          <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
             Delete this task?
           </h3>
-          <p className="text-gray-500 mb-6">
+          <p className="text-gray-500 dark:text-gray-400 mb-6">
             "{deletingTask?.title}" will be permanently deleted.
           </p>
           <div className="flex space-x-3">

@@ -8,9 +8,12 @@ import {
   X, 
   LogOut,
   User,
-  ChevronDown
+  ChevronDown,
+  Moon,
+  Sun
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 
 const Sidebar = ({ isOpen, setIsOpen }) => {
   const location = useLocation();
@@ -136,19 +139,30 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
 };
 
 const Header = ({ setIsOpen }) => {
+  const { darkMode, toggleDarkMode } = useTheme();
+  
   return (
-    <header className="bg-white shadow-sm border-b border-gray-200 px-4 py-3 lg:px-6">
+    <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 px-4 py-3 lg:px-6 transition-colors duration-300">
       <div className="flex items-center justify-between">
         <button
-          className="lg:hidden text-gray-600 hover:text-gray-900 p-2 rounded-lg hover:bg-gray-100"
+          className="lg:hidden text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
           onClick={() => setIsOpen(true)}
         >
           <Menu size={24} />
         </button>
         <div className="flex-1 lg:ml-0 ml-4">
-          <h2 className="text-lg font-semibold text-gray-800">Welcome back! 👋</h2>
-          <p className="text-sm text-gray-500">Manage your employees and tasks efficiently</p>
+          <h2 className="text-lg font-semibold text-gray-800 dark:text-white">Welcome back! 👋</h2>
+          <p className="text-sm text-gray-500 dark:text-gray-400">Manage your employees and tasks efficiently</p>
         </div>
+        
+        {/* Dark Mode Toggle */}
+        <button
+          onClick={toggleDarkMode}
+          className="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-yellow-400 hover:bg-gray-200 dark:hover:bg-gray-600 transition-all duration-300"
+          title={darkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+        >
+          {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+        </button>
       </div>
     </header>
   );
@@ -158,7 +172,7 @@ const Layout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
+    <div className="flex min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors duration-300">
       <Sidebar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />
       <div className="flex-1 flex flex-col min-h-screen lg:ml-0">
         <Header setIsOpen={setSidebarOpen} />
